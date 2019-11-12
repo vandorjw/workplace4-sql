@@ -5,9 +5,10 @@ select
 	s.status as s_status,
 	o.billing_date,
 	s.next_billing_date,
+	TIMESTAMPDIFF(HOUR, s.next_billing_date, o.billing_date) as difference_in_hours,
 	CASE
-		WHEN s.next_billing_date > o.billing_date THEN "t"
-		ELSE "f"
+		WHEN s.next_billing_date > o.billing_date THEN "true"
+		ELSE "false"
 	END as sub_gt_order
 from orders o left join subscriptions s 
 on o.subscription_id = s.subscription_id
@@ -18,4 +19,4 @@ and o.status != 'Active'
 group by o.subscription_id) as max_not_active)
 and o.billing_date != s.next_billing_date
 and s.status='Active'
-HAVING sub_gt_order="f";
+HAVING sub_gt_order="false";
