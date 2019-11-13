@@ -21,6 +21,7 @@ AND NOT
 		FROM
 			orders o
 		WHERE o.status = 'Processed'
+		AND o.subscription_id IS NOT NULL
 		AND o.order_id IN (
 			SELECT
 				i.order_id
