@@ -1,4 +1,6 @@
 subscriptions s
+
+-- PART 1
 SET
     s.next_billing_date =
     CASE
@@ -29,3 +31,13 @@ SET
 WHERE s.status IN ('Active', 'Skipped')
 and s.next_billing_date is not NULL
 and s.next_billing_date != '0000-00-00 00:00:00';
+
+-- PART 2
+UPDATE 
+	orders o
+left join subscriptions s on o.subscription_id=s.subscription_id
+SET 
+	o.billing_date = s.next_billing_date
+WHERE o.subscription_id=s.subscription_id
+AND o.status='Active'
+AND o.subscription_id is not NULL;
