@@ -44,3 +44,12 @@ WHERE
 	AND ((n1.product_comped = n2.product_comped) or (n1.product_comped is null and n2.product_comped is null))
 	AND ((n1.comped_by = n2.comped_by) or (n1.comped_by IS NULL and n2.comped_by IS NULL))
 	AND ((n1.note_product_id = n2.note_product_id) or (n1.note_product_id is NULL and n2.note_product_id is NULL));
+							   
+							   
+ALTER TABLE order_products ADD UNIQUE unique_rows(
+order_id,
+product_id,
+addon,
+promo_code,
+product_comped,
+comped_by);
