@@ -51,7 +51,6 @@ ALTER TABLE promo_code_plans ADD UNIQUE unique_rows( `promo_code`,
 `plan_id`, `amount`, `percentage` );
 
 -- dedup and constrain postal_codes
-
 SELECT postal_code, zone_id, shipper, count(*) as a
 FROM postal_codes
 group by postal_code, zone_id, shipper
@@ -72,3 +71,5 @@ WHERE
 ALTER TABLE postal_codes ADD UNIQUE unique_rows( `postal_code`,
 `zone_id`, `shipper` );
 
+-- CHECK Weirdess in POSTALCODE
+select LENGTH(pc.postal_code), count(*) from postal_codes pc group by LENGTH(pc.postal_code);
