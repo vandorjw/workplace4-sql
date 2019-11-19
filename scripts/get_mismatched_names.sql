@@ -11,4 +11,5 @@ right join orders o on
 	u.user_id = o.user_id
 WHERE
 	(u.first_name != o.first_name
-	or u.last_name != o.last_name);
+	or u.last_name != o.last_name)
+and o.legacy_order_id is null;
