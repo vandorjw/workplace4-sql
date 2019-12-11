@@ -1,3 +1,4 @@
+-- identify shitty emails
 SELECT
 	u.user_id,
 	REPLACE(REPLACE(REPLACE(REPLACE(u.email, ' ', '[SPACE]'), '\t', '[TAB]'), '\n', '[NEWLINE]'), ',', '[COMMA]')  as shitty_email
