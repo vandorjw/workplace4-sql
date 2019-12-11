@@ -1,10 +1,12 @@
 SELECT
 	u.user_id,
-	REPLACE(u.email, ' ', '|') as shitty_email,
-	s.status as subscription_status
-FROM users u left join subscriptions s on 
-	u.user_id=s.user_id
+	REPLACE(REPLACE(REPLACE(REPLACE(u.email, ' ', '[SPACE]'), '\t', '[TAB]'), '\n', '[NEWLINE]'), ',', '[COMMA]')  as shitty_email
+FROM users u 
 WHERE 
-	(u.email NOT REGEXP '^[^@]+@[^@]+\.[^@]{2,}$') or 
-	(u.email like '% %')
+	u.email NOT REGEXP '^[^@]+@[^@]+\.[^@]{2,}$' or 
+	u.email like '% %' or
+	u.email like '%\t%' or
+	u.email like '%\n%' or
+	u.email like '%#%' or 
+	u.email like '%,%'
 ;
