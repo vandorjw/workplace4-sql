@@ -11,3 +11,14 @@ WHERE
 	u.email like '%#%' or 
 	u.email like '%,%'
 ;
+
+DELIMITER $$
+CREATE TRIGGER trig_email_check BEFORE INSERT ON users
+FOR EACH ROW 
+BEGIN 
+IF (NEW.email REGEXP '^[^@]+@[^@]+\.[^@]{2,}$' ) = 0 THEN 
+  SIGNAL SQLSTATE '12345'
+     SET MESSAGE_TEXT = "bad email format";
+END IF; 
+END$$
+DELIMITER ;
