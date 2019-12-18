@@ -16,8 +16,8 @@ select o.order_id, o.subtotal, broken_subtotal.correct_subtotal, o.promo_code, b
 		WHEN (pcp.amount is not null and pcp.amount > 0)
 		THEN
 			CASE
-				WHEN sp.price-round(pcp.amount) < 0 THEN 0
-				ELSE sp.price-round(pcp.amount)
+				WHEN sp.price-pcp.amount < 0 THEN 0
+				ELSE sp.price-pcp.amount
 			END
 		WHEN (pcp.percentage is not null and pcp.percentage > 0)
 		THEN
@@ -42,6 +42,7 @@ where
 	and pcp.plan_id = s.plan_id
 	and o.status in ('Active')
 	and pc.status = 'active'
+	and o.subtotal > 0
 having
-	round(o.subtotal) <> correct_subtotal) as broken_subtotal on 
+	round(o.subtotal) <> round(correct_subtotal)) as broken_subtotal on 
 o.order_id=broken_subtotal.order_id;
