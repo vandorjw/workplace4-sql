@@ -40,7 +40,6 @@ where
 	pc.tier is not null
 	and (pcp.amount is not NULL or pcp.percentage is not NULL)
 	and pcp.plan_id = s.plan_id
-	and pcp.amount > 0
 	and o.status in ('Active')
 	and pc.status = 'active'
 having
