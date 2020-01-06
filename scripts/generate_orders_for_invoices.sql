@@ -67,3 +67,10 @@ and
 		invoices i
 	where
 		i.order_id = dups.order_id);
+
+
+-- update the invoices
+update invoices i left join orders o on 
+i.invoice_id=o.receipt_id
+set i.order_id=o.order_id
+where o.order_id is not null;
