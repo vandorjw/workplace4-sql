@@ -117,3 +117,26 @@ WHERE
 	AND i.invoice_id IS NULL
 	AND l.lead_id IS NULL
 	AND u.password='no password';									   
+
+													   
+-- delete useless addresses
+delete a.* from addresses a
+left join users u1 on 
+u1.billing_address=a.address_id
+left join users u2 on 
+u2.shipping_address=a.address_id
+left join subscriptions s1 on 
+s1.billing_address=a.address_id
+left join subscriptions s2 on 
+s2.shipping_address=a.address_id
+left join orders o1 on
+o1.billing_address=a.address_id
+left join orders o2 on 
+o2.shipping_address=address_id
+WHERE
+u1.user_id is null 
+and u2.user_id is null
+and s1.subscription_id is null
+and s2.subscription_id is null
+and o1.order_id is null
+and o2.order_id is null;
