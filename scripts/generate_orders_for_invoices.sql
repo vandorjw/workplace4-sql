@@ -7,7 +7,7 @@ having multi_invs > 1) as dups;
 
 
 -- Generate orders from invoices
-INSERT INTO orders
+INSERT IGNORE INTO orders
 (order_id, legacy_order_id, user_id, subscription_id, first_name, last_name, shipping_address, billing_address, order_type, zone_id, 
 create_date, status, status_date, payment_processor, payment_processor_id, receipt_id, subtotal, 
 shipping_amount, tax_amount, credit_applied, promo_code, billing_date, invoice_generated,
