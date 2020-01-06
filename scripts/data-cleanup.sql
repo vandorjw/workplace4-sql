@@ -79,3 +79,23 @@ REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(UPPER(a.postal), " ", ""
 select address_id, address_1, postal, city, state from addresses where postal in (
 select distinct(postal) from addresses a where not ((postal REGEXP '^[A-Z][0-9][A-Z][0-9][A-Z][0-9]$') or (postal REGEXP '^[0-9][0-9][0-9][0-9][0-9]$')));
 
+
+-- delete nonsense activity logs
+DELETE al.* from activity_log al where user_id in
+(SELECT
+	u.user_id
+FROM
+	users u
+LEFT JOIN orders o ON
+	o.user_id = u.user_id
+LEFT JOIN subscriptions s ON
+	s.user_id = u.user_id
+LEFT JOIN invoices i ON
+	i.user_id = u.user_id
+WHERE
+	o.order_id IS NULL
+	AND s.subscription_id IS NULL
+	AND i.invoice_id IS NULL
+	AND u.password='no password');
+													   
+													   
