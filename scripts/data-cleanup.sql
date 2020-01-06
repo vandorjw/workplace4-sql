@@ -71,5 +71,11 @@ WHERE
 ALTER TABLE postal_codes ADD UNIQUE unique_rows( `postal_code`,
 `zone_id`, `shipper` );
 
--- CHECK Weirdess in POSTALCODE
-select LENGTH(pc.postal_code), count(*) from postal_codes pc group by LENGTH(pc.postal_code);
+-- Remove Weirdess in POSTALCODE
+update addresses a set a.postal=TRIM(
+REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(UPPER(a.postal), " ", ""), "-", ""), ",", ""), "\t", ""), "\n", ""), "\r", ""), ".", ""));
+
+-- Check left-over strangeness in postal/zipcodes
+select address_id, address_1, postal, city, state from addresses where postal in (
+select distinct(postal) from addresses a where not ((postal REGEXP '^[A-Z][0-9][A-Z][0-9][A-Z][0-9]$') or (postal REGEXP '^[0-9][0-9][0-9][0-9][0-9]$')));
+
