@@ -97,5 +97,23 @@ WHERE
 	AND s.subscription_id IS NULL
 	AND i.invoice_id IS NULL
 	AND u.password='no password');
-													   
-													   
+
+-- remove dead user accounts
+DELETE
+	u.*
+FROM
+	users u
+LEFT JOIN orders o ON
+	o.user_id = u.user_id
+LEFT JOIN subscriptions s ON
+	s.user_id = u.user_id
+LEFT JOIN invoices i ON
+	i.user_id = u.user_id
+LEFT JOIN leads l on 
+	l.user_id = u.user_id
+WHERE
+	o.order_id IS NULL
+	AND s.subscription_id IS NULL
+	AND i.invoice_id IS NULL
+	AND l.lead_id IS NULL
+	AND u.password='no password';									   
