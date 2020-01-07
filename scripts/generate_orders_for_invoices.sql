@@ -26,24 +26,24 @@ select
 	o.create_date,
 	CASE
 		WHEN i.status='Cancelled' then 'Cancelled'
-		WHEN i.status='Skipped' then 'Skipped'
+		WHEN i.status='Skipped' then 'Cancelled'
 		ELSE 'Processed'
 	END as status,
 	i.status_date,
 	o.payment_processor,
 	o.payment_processor_id,
 	i.invoice_id,
-	o.subtotal,
-	o.shipping_amount,
+	i.order_total as subtotal,
+	i.shipping_cost as shipping_amount,
 	o.tax_amount,
 	o.credit_applied,
-	o.promo_code,
-	o.billing_date,
+	i.legacy_promo_code as promo_code,
+	i.create_date as billing_date,
 	1,
-	o.receipt_date,
+	i.create_date as receipt_date,
 	1,
 	o.reminder_email_date,
-	o.comped_order,
+	i.comped_order as comped_order,
 	o.refunded,
 	o.projected_shipper_id,
 	o.projected_shipping_date
