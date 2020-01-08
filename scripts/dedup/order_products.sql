@@ -1,4 +1,5 @@
-DELETE
+-- DELETE
+SELECT
 	n1.*
 FROM
 	order_products n1,
