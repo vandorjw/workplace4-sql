@@ -84,3 +84,35 @@ set new_i.user_id=u.user_id
 where new_i.order_id is null and new_i.user_id is null
 and u.user_id is not null;
 
+
+-- delete useless invoices
+create TEMPORARY table delete_invoice_id
+select
+	distinct(i.invoice_id)
+from
+	invoices i
+join (select order_id from (select o.order_id, count(*) as multi_invs from orders o left join invoices i on 
+o.order_id=i.order_id
+where i.invoice_id is not null
+group by o.order_id
+having multi_invs > 1) as inner_dups) as dups on
+i.order_id=dups.order_id
+where 
+i.order_id=dups.order_id
+and i.status <> 'Fulfilled'
+and
+	i.status_date < (
+	select
+		max(i.status_date)
+	from
+		invoices i
+	where
+		i.order_id = dups.order_id);
+	
+select * from delete_invoice_id;
+	
+
+delete from invoice_products where invoice_id in (select * from delete_invoice_id);
+delete from shipping_labels where invoice_id in (select * from delete_invoice_id);
+delete from invoices where invoice_id in (select * from delete_invoice_id);
+drop table delete_invoice_id;
