@@ -162,3 +162,51 @@ delete from invoice_products where invoice_id in (select * from delete_invoice_i
 delete from shipping_labels where invoice_id in (select * from delete_invoice_id);
 delete from invoices where invoice_id in (select * from delete_invoice_id);
 drop table delete_invoice_id;
+
+
+-- generate more orders
+INSERT IGNORE INTO orders
+(order_id, legacy_order_id, user_id, subscription_id, first_name, last_name, shipping_address, billing_address, order_type, zone_id, 
+create_date, status, status_date, payment_processor, payment_processor_id, receipt_id, subtotal, 
+shipping_amount, tax_amount, credit_applied, promo_code, billing_date, invoice_generated,
+receipt_date, reminder_email_sent, reminder_email_date, comped_order, refunded)
+SELECT
+	ULID(),
+	NULL,
+	o.user_id,
+	o.subscription_id,
+	o.first_name,
+	o.last_name,
+	o.shipping_address,
+	o.billing_address,
+	o.order_type,
+	o.zone_id,
+	o.create_date,
+	CASE
+		WHEN i.status='Cancelled' then 'Cancelled'
+		WHEN i.status='Skipped' then 'Cancelled'
+		ELSE 'Processed'
+	END as status,
+	i.status_date,
+	o.payment_processor,
+	o.payment_processor_id,
+	i.invoice_id,
+	i.order_total as subtotal,
+	i.shipping_cost as shipping_amount,
+	o.tax_amount,
+	o.credit_applied,
+	i.legacy_promo_code as promo_code,
+	i.create_date as billing_date,
+	1,
+	i.create_date as receipt_date,
+	1,
+	o.reminder_email_date,
+	i.comped_order as comped_order,
+	o.refunded
+from
+invoices i join orders o on o.order_id=i.order_id where o.invoice_generated=0 and o.status='Active' and i.invoice_id is not null;
+
+update invoices i left join orders o on 
+i.invoice_id=o.receipt_id
+set i.order_id=o.order_id
+where o.order_id is not null;
