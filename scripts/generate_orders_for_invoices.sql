@@ -67,12 +67,14 @@ and
 		i.order_id = dups.order_id);
 
 
--- update the invoices
+-- update the invoices 
 update invoices i left join orders o on 
 i.invoice_id=o.receipt_id
 set i.order_id=o.order_id
 where o.order_id is not null;
 
+-- run `Generate orders from invoices` again...
+-- run `update the invoices ` again ...
 
 -- updates 1075 historic records
 update *******_client.invoices new_i 
@@ -110,8 +112,52 @@ and
 		i.order_id = dups.order_id);
 	
 select * from delete_invoice_id;
-	
 
+delete from invoice_products where invoice_id in (select * from delete_invoice_id);
+delete from shipping_labels where invoice_id in (select * from delete_invoice_id);
+delete from invoices where invoice_id in (select * from delete_invoice_id);
+drop table delete_invoice_id;
+
+
+-- delete more useless invoices
+create TEMPORARY table delete_invoice_id
+SELECT 
+	i1.invoice_id
+FROM
+    invoices i1,
+    invoices i2
+WHERE
+    i1.order_id IN (SELECT 
+            o.order_id
+        FROM
+            invoices i
+                LEFT JOIN
+            orders o ON o.order_id = i.order_id
+        WHERE
+            i.order_id IS NOT NULL
+        GROUP BY o.order_id
+        HAVING COUNT(DISTINCT invoice_id) > 1)
+and 
+	i2.order_id IN (SELECT 
+            o.order_id
+        FROM
+            invoices i
+                LEFT JOIN
+            orders o ON o.order_id = i.order_id
+        WHERE
+            i.order_id IS NOT NULL
+        GROUP BY o.order_id
+        HAVING COUNT(DISTINCT invoice_id) > 1)
+and
+i1.invoice_id < i2.invoice_id
+AND
+i1.order_id=i2.order_id
+and 
+i1.user_id=i2.user_id
+and 
+i1.create_date=i2.create_date;
+
+select * from delete_invoice_id;
 delete from invoice_products where invoice_id in (select * from delete_invoice_id);
 delete from shipping_labels where invoice_id in (select * from delete_invoice_id);
 delete from invoices where invoice_id in (select * from delete_invoice_id);
