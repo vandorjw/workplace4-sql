@@ -204,7 +204,7 @@ SELECT
 	i.comped_order as comped_order,
 	o.refunded
 from
-invoices i join orders o on o.order_id=i.order_id where o.invoice_generated=0 and o.status='Active' and i.invoice_id is not null;
+invoices i join orders o on o.order_id=i.order_id where o.invoice_generated=0 and o.status in ('Active', 'Declined', 'Cancelled') and i.invoice_id is not null;
 
 update invoices i left join orders o on 
 i.invoice_id=o.receipt_id
