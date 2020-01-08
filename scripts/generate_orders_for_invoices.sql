@@ -11,8 +11,8 @@ INSERT IGNORE INTO orders
 (order_id, legacy_order_id, user_id, subscription_id, first_name, last_name, shipping_address, billing_address, order_type, zone_id, 
 create_date, status, status_date, payment_processor, payment_processor_id, receipt_id, subtotal, 
 shipping_amount, tax_amount, credit_applied, promo_code, billing_date, invoice_generated,
-receipt_date, reminder_email_sent, reminder_email_date, comped_order, refunded, projected_shipper_id, projected_shipping_date)
-select
+receipt_date, reminder_email_sent, reminder_email_date, comped_order, refunded)
+SELECT
 	ULID(),
 	NULL,
 	o.user_id,
