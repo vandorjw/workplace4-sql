@@ -72,3 +72,15 @@ update invoices i left join orders o on
 i.invoice_id=o.receipt_id
 set i.order_id=o.order_id
 where o.order_id is not null;
+
+
+-- updates 1075 historic records
+update *******_client.invoices new_i 
+join *******.order_invoice old_i on
+new_i.legacy_invoice_id=old_i.order_invoice_id
+join *******_client.users u on 
+TRIM(u.email)=TRIM(old_i.order_invoice_email)
+set new_i.user_id=u.user_id
+where new_i.order_id is null and new_i.user_id is null
+and u.user_id is not null;
+
