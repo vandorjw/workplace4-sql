@@ -44,9 +44,7 @@ select
 	1,
 	o.reminder_email_date,
 	i.comped_order as comped_order,
-	o.refunded,
-	o.projected_shipper_id,
-	o.projected_shipping_date
+	o.refunded
 from
 	invoices i
 left join orders o on 
