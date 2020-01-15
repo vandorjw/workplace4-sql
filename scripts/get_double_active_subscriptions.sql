@@ -1,5 +1,5 @@
 -- DOUBLE ACTIVE SUBSCRIPTIONS
- select
+select
 	s.subscription_id,
 	o.order_id,
 	s.next_billing_date as sub_billing_date,
