@@ -39,7 +39,7 @@ WHERE
     u.billing_address IS NULL
         AND o.billing_address IS NOT NULL;
 		
--- Set string NA postal codes to truLOCAL office address 		
+-- Set string NA postal codes to office address 		
 UPDATE addresses SET 
 	address_1 = '151 Charles Street West',
 	address_2 = NULL,
