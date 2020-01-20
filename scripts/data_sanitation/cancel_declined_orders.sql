@@ -55,13 +55,18 @@ and o.status not in ('Processed', 'Cancelled')
 group by o.order_id;
 
 
-update orders o set o.status='Cancelled', o.status_date=now() where o.order_id in (
-	select o.order_id from subscriptions s left join orders o on 
-	s.subscription_id=o.subscription_id
-	where s.status='Cancelled'
-	and o.status not in ('Processed', 'Cancelled')
-	group by o.order_id
+create TEMPORARY table update_order_id
+select o.order_id from subscriptions s left join orders o on 
+s.subscription_id=o.subscription_id
+where s.status='Cancelled'
+and o.status not in ('Processed', 'Cancelled')
+group by o.order_id;
+
+
+update orders set status='Cancelled', status_date=now() where order_id in (
+	select * from update_order_id
 );
 
-COMMIT;
+drop table update_order_id;
 
+COMMIT;
