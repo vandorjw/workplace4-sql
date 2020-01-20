@@ -1,4 +1,4 @@
-BEGIN TRANSACTION;
+BEGIN;
 
 INSERT INTO activity_log(user_id, `type`, log_date, status, log, endpoint)
 select
@@ -55,7 +55,7 @@ and o.status not in ('Processed', 'Cancelled')
 group by o.order_id;
 
 
-update orders o set s.status='Cancelled', o.status_date=now() where o.order_id in (
+update orders o set o.status='Cancelled', o.status_date=now() where o.order_id in (
 	select o.order_id from subscriptions s left join orders o on 
 	s.subscription_id=o.subscription_id
 	where s.status='Cancelled'
